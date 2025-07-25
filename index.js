@@ -1,37 +1,73 @@
 // index.js
 
 // Step 1: Fetch Data from the API
-// - Create a function `fetchWeatherData(city)`
-// - Use fetch() to retrieve data from the OpenWeather API
-// - Handle the API response and parse the JSON
-// - Log the data to the console for testing
+// Fetch the weather data for the city entered by the user
+async function fetchWeatherData(city) {
+  const apiKey = 'your_api_key_here'; // Replace with your OpenWeather API key
+  const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+
+  try {
+    // Show a loading message before the fetch request
+    displayLoading(true);
+    
+    const response = await fetch(url);
+    
+    // Check if the response is successful (status code 200)
+    if (!response.ok) {
+      throw new Error('City not found');
+    }
+
+    // Parse the JSON response
+    const data = await response.json();
+    displayWeather(data); // Call the function to display weather data on the page
+  } catch (error) {
+    // Handle errors (e.g., invalid city name, network issues)
+    displayError(error.message);
+  } finally {
+    // Hide the loading message after the request is complete
+    displayLoading(false);
+  }
+}
 
 // Step 2: Display Weather Data on the Page
-// - Create a function `displayWeather(data)`
-// - Dynamically update the DOM with weather details (e.g., temperature, humidity, weather description)
-// - Ensure the function can handle the data format provided by the API
+// Update the DOM with weather details such as temperature, humidity, and description
+function displayWeather(data) {
+  const weatherDisplay = document.getElementById('weather-display');
+  weatherDisplay.innerHTML = `
+    <h2>Weather in ${data.name}, ${data.sys.country}</h2>
+    <p>Temperature: ${data.main.temp}°C</p>
+    <p>Humidity: ${data.main.humidity}%</p>
+    <p>Weather: ${data.weather[0].description}</p>
+    <p>Wind Speed: ${data.wind.speed} m/s</p>
+  `;
+}
 
 // Step 3: Handle User Input
-// - Add an event listener to the button to capture user input
-// - Retrieve the value from the input field
-// - Call `fetchWeatherData(city)` with the user-provided city name
+// Attach an event listener to the "Get Weather" button to capture the city name
+document.getElementById('fetch-weather').addEventListener('click', () => {
+  const city = document.getElementById('city-input').value.trim();
+  if (city) {
+    fetchWeatherData(city); // Fetch weather data for the entered city
+  } else {
+    displayError('Please enter a city name');
+  }
+});
 
 // Step 4: Implement Error Handling
-// - Create a function `displayError(message)`
-// - Handle invalid city names or network issues
-// - Dynamically display error messages in a dedicated section of the page
+// Display error messages on the page if something goes wrong
+function displayError(message) {
+  const errorMessage = document.getElementById('error-message');
+  errorMessage.textContent = message;
+  errorMessage.classList.remove('hidden'); // Make the error message visible
+}
 
-// Step 5: Optimize Code for Maintainability
-// - Refactor repetitive code into reusable functions
-// - Use async/await for better readability and to handle asynchronous operations
-// - Ensure all reusable functions are modular and clearly named
-
-// BONUS: Loading Indicator
-// - Optionally, add a loading spinner or text while the API request is in progress
-
-// BONUS: Additional Features
-// - Explore adding more features, such as displaying additional weather details (e.g., wind speed, sunrise/sunset)
-// - Handle edge cases, such as empty input or API rate limits
-
-// Event Listener for Fetch Button
-// - Attach the main event listener to the button to start the process
+// Step 5: Show Loading Indicator
+// Display a loading spinner or message while the API request is in progress
+function displayLoading(isLoading) {
+  const loadingElement = document.getElementById('loading');
+  if (isLoading) {
+    loadingElement.classList.remove('hidden'); // Show loading spinner or message
+  } else {
+    loadingElement.classList.add('hidden'); // Hide loading spinner or message
+  }
+}

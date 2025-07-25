@@ -53,12 +53,21 @@ h1 {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+#weather-display h2 {
+  margin-top: 0;
+}
+
+#weather-display p {
+  margin: 5px 0;
+}
+
 /* Error Message */
 #error-message {
   color: red;
   font-weight: bold;
   text-align: center;
   margin-top: 10px;
+  font-size: 18px;
 }
 
 /* Hidden Class for Error Handling */
@@ -67,7 +76,7 @@ h1 {
 }
 
 /* BONUS: Loading Spinner */
-#loading-spinner {
+#loading {
   display: none;
   margin: 20px auto;
   text-align: center;
@@ -76,4 +85,11 @@ h1 {
 #loading-spinner img {
   width: 50px;
   height: 50px;
+}
+
+/* Loading Text */
+#loading-text {
+  font-size: 18px;
+  font-weight: bold;
+  color: #007bff;
 }
